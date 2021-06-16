@@ -11,7 +11,7 @@ NUMBER_OF_THREADS = 3
 JOB_NUMBER = [1, 2,3]
 queue = Queue()
 
-addresses_connections = []
+addresses_connections = []  # global list  collect connection detail about client
 flag = True # Node isn't recover yet (reset)
 
 
@@ -26,7 +26,7 @@ s=socket.socket(socket.AF_INET,socket.SOCK_STREAM )
 s.bind((host, port))
     
 # Establish connection with a client (socket must be listening)
-
+# this function listen and accept client connection
 def socket_accept():
 
 
@@ -45,6 +45,8 @@ def socket_accept():
 
 s1=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
+# Act as client 
+# try to conntect with any server
 def socket_connect():
 
     while True:
@@ -62,50 +64,9 @@ def socket_connect():
             continue
 
 
-    #Establish connection with server
-
-
-"""def receive():
-
-    global flag
-
-    
-    while True:
-
-        if len(addresses_connections) > 0:
-
-            host_conn = addresses_connections[-1][1]
-
-            signal = False
-
-# file 1 receiveing -------------------
-            try:
-
-                recovery_file = host_conn.recv(1024).decode("utf-8")
-                #time.sleep(5)
-
-                with open("recovery.jpg","wb") as file1:
-                    while True:
-                        data = host_conn.recv(1024)
-                        if not data:
-                            break
-                        file1.write(data)
-                    file1.close()    
-                print("file 1  received succesfully")
-                flag = True
-                
-                current_time = (datetime.now().strftime(' %H:%M:%S.%f'))
-                print(current_time)
-                forward_recovery_file(recovery_file)
-            except:
-                continue    
-
-            break
-
-        else:
-            continue    """
-
-
+            
+ # check whether file receive or not from adjacent node
+# If file received then immediately forward to it's adjacent node
 def Receive_recovery_file():
 
     global flag
@@ -153,11 +114,11 @@ def Receive_recovery_file():
             except:
                 pass
 
-        
+        # file forward to adjacent node
         forward_recovery_file()    
                       
             
-        
+# file forward procedure        
 def forward_recovery_file():
     
     # Sending signal msg before sending a file------
@@ -193,11 +154,11 @@ def forward_recovery_file():
         file1.close()
 
     print("File transfer successfull to adjacent node...")     
- 
-# Create worker threads
 
-
-        
+    
+    
+#-------------------------THREADS-------------   
+# Create worker threads      
 
 # Do next job that is in the queue (handle connections, send file)
 
@@ -236,9 +197,6 @@ def create_jobs():
         queue.put(x)
 
     queue.join()
-
-
-
 
 
 create_workers()
