@@ -29,40 +29,38 @@ s.bind((host, port))
 
 def socket_accept():
 
-    print("A\n")
+
     s.listen(5)
     
     print("Waiting for connection....")
 
     while True:    
-        print("B\n")
+
         conn, address = s.accept()
 
         s.setblocking(1)  # prevents timeout
 
         addresses_connections.append([address,conn])
-
-        print("C\n")
         print("\nNEW CONNECTION:- {} connected.".format(address))
 
 s1=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 def socket_connect():
-    print("a\n")
+
     while True:
-        #print("b\n")
+
         Host= "192.168.56.7"
         Port = 9993      
 
         try:
             s1.connect((Host,Port))
             print("Connected with server !")
-            print("c\n")
+
             break
 
         except:
             continue
-        print("d\n")
+
 
     #Establish connection with server
 
@@ -110,23 +108,18 @@ def socket_connect():
 
 def Receive_recovery_file():
 
-    print("Aa\n")
     global flag
 
-    count1 = 0
     while flag:
-        count1+=1
-        print("Bb\n")
+
         check = True
-        count = 0
         while check:
-            count+=1
-            print("Cc\n")
+
             for add_conn in addresses_connections:
                 conn = add_conn[1]
                 try:
                     msg = conn.recv(1024).decode("utf-8")
-                    print("1\n")
+
                     if msg =='Client':
                         with open("recovery.jpg","wb") as file1:
                             while True:
@@ -135,17 +128,17 @@ def Receive_recovery_file():
                                     break
                                 file1.write(data)
                             file1.close()
-                        print("2\n")    
+   
                         print("file received succesfully")
                         flag = False    
                         check= False
                         break
                 except:
                     pass
-            print("Dd\n")
+
             try:
                 msg = s1.recv(1024).decode("utf-8")
-                print("1\n")
+
                 if msg =='Server':
                     with open("recovery.jpg","wb") as file1:
                         while True:
@@ -154,20 +147,14 @@ def Receive_recovery_file():
                                 break
                             file1.write(data)
                         file1.close()
-                    print("2\n")
                     print("file received succesfully")
                     flag = False
                     check= False
             except:
                 pass
-            print("Ee\n")
-            if count==15:
-                break
-        print("3\n")
-        if count1 == 5:
-            break
+
         
-        #forward_recovery_file()    
+        forward_recovery_file()    
                       
             
         
@@ -179,16 +166,16 @@ def forward_recovery_file():
         conn = add_conn[1]
         try:
             conn.send(str.encode("Server"))
-            print("4S\n")
+
         except:
             pass    
     try:
         s1.send(str.encode("Client"))
-        print("4C\n")
+
     except:
         pass   
     # Sending Whole file to each node---------
-    print("5\n")
+
     with  open("recovery.jpg","rb") as file1:
         data = file1.read(1024)
         while data:
@@ -204,7 +191,7 @@ def forward_recovery_file():
                 pass
             data = file1.read(1024)
         file1.close()
-    print("6\n")
+
     print("File transfer successfull to adjacent node...")     
  
 # Create worker threads
